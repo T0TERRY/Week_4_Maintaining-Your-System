@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 4: Maintaining Your System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 0 0 15px 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .presentation-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 600px;
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+            margin-bottom: 40px;
+        }
+
+        .slides-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background-color: #2c3e50;
+            color: white;
+        }
+
+        .slide-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slide-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .slide-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .slide-btn:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-indicator {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .slide-content {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .slide {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .slide-title {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #3498db;
+        }
+
+        .slide-body {
+            font-size: 1.1rem;
+        }
+
+        .example-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .example-title {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .example-title i {
+            color: #3498db;
+        }
+
+        .tip-box {
+            background-color: #e8f4fc;
+            border: 1px solid #3498db;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .tip-box i {
+            color: #3498db;
+            margin-right: 10px;
+        }
+
+        ul, ol {
+            padding-left: 25px;
+            margin: 15px 0;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .icon-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .icon-list li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .icon-list i {
+            color: #3498db;
+            margin-right: 12px;
+            margin-top: 3px;
+        }
+
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .slide-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            font-style: italic;
+            color: #7f8c8d;
+        }
+
+        .slides-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .slide-thumb {
+            background-color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+
+        .slide-thumb:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .slide-thumb.active {
+            border-color: #3498db;
+            background-color: #e8f4fc;
+            font-weight: 600;
+        }
+
+        .slide-thumb-number {
+            display: block;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background-color: #ecf0f1;
+            margin-top: 15px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: #3498db;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .slide-content {
+                padding: 25px;
+            }
+            
+            .slide-title {
+                font-size: 1.7rem;
+            }
+            
+            .slides-list {
+                gap: 10px;
+            }
+            
+            .slide-thumb {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Week 4: Maintaining Your System</h1>
+            <p class="subtitle">Learn to maintain systems long-term, handle information challenges, and build sustainable habits</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="slides-list">
+            <!-- Slide thumbnails will be generated by JavaScript -->
+        </div>
+
+        <div class="presentation-container">
+            <div class="slides-nav">
+                <div class="slide-controls">
+                    <button class="slide-btn" id="prev-btn">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <span class="slide-indicator">Slide <span id="current-slide">1</span> of <span id="total-slides">18</span></span>
+                    <button class="slide-btn" id="next-btn">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress" id="slide-progress"></div>
+                </div>
+            </div>
+
+            <div class="slide-content">
+                <!-- Slide 1 -->
+                <div class="slide active" id="slide-1">
+                    <h2 class="slide-title">Welcome Back - Week 4</h2>
+                    <div class="slide-body">
+                        <p><strong>Title:</strong> "Keeping Your System Working"</p>
+                        
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-clipboard-check"></i>
+                                Progress Check
+                            </div>
+                            <p>Take a moment to reflect on your current information management system:</p>
+                            <ul class="icon-list">
+                                <li><i class="fas fa-check-circle"></i> <strong>What's working well?</strong> What parts of your system are helping you stay organized?</li>
+                                <li><i class="fas fa-exclamation-circle"></i> <strong>What's challenging?</strong> Where do you still struggle with information overload?</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Tip:</strong> Don't worry if you're not perfect yet. This week is about improving and maintaining what works for you.
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Start with self-assessment to understand your current situation
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="slide" id="slide-2">
+                    <h2 class="slide-title">The Maintenance Challenge</h2>
+                    <div class="slide-body">
+                        <p>From reading: <em>"Information keeps flowing"</em></p>
+                        <p>If we don't maintain our system, problems can quickly accumulate:</p>
+                        
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Consequences of Poor Maintenance
+                            </div>
+                            <ul class="icon-list">
+                                <li><i class="fas fa-tachometer-alt"></i> <strong>It can overwhelm us</strong> - Piles of unprocessed information create mental clutter</li>
+                                <li><i class="fas fa-frown"></i> <strong>Lower morale</strong> - Feeling disorganized reduces motivation</li>
+                                <li><i class="fas fa-bug"></i> <strong>Higher rate of errors</strong> - Important details get lost in the clutter</li>
+                                <li><i class="fas fa-comments"></i> <strong>More misunderstandings</strong> - Can't find the information you need when communicating</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Example:</strong> Imagine your email inbox with 1,000 unread messages. How likely are you to find that important message from last week? Regular maintenance prevents this.
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Information never stops coming - your maintenance shouldn't either
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="slide" id="slide-3">
+                    <h2 class="slide-title">Keep On Top - Core Principle</h2>
+                    <div class="slide-body">
+                        <p>The golden rule of information management:</p>
+                        <p><strong>Don't let it pile up</strong></p>
+                        
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-balance-scale"></i>
+                                Good vs. Bad Habits
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                <div>
+                                    <h4 style="color: #27ae60; margin-bottom: 10px;">Good Habits</h4>
+                                    <ul class="icon-list">
+                                        <li><i class="fas fa-calendar-day"></i> Process daily, not weekly</li>
+                                        <li><i class="fas fa-folder-plus"></i> File immediately, not later</li>
+                                        <li><i class="fas fa-trash-alt"></i> Delete regularly, not eventually</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 style="color: #e74c3c; margin-bottom: 10px;">Bad Habits</h4>
+                                    <ul class="icon-list">
+                                        <li><i class="fas fa-calendar-week"></i> Letting things accumulate</li>
+                                        <li><i class="fas fa-folder"></i> "I'll file it later" mentality</li>
+                                        <li><i class="fas fa-trash"></i> Never deleting anything</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Key Insight:</strong> Small consistent effort > Big occasional cleanup. Spending 10 minutes daily is easier than spending 2 hours every weekend.
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Consistency is key - small daily efforts prevent overwhelming cleanups
+                    </div>
+                </div>
+
+                <!-- Slide 4 -->
+                <div class="slide" id="slide-4">
+                    <h2 class="slide-title">Daily Maintenance Routine</h2>
+                    <div class="slide-body">
+                        <p><strong>10 minutes daily</strong> can keep your system running smoothly:</p>
+                        
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-sun"></i>
+                                Morning or Evening Routine
+                            </div>
+                            <ul class="icon-list">
+                                <li><i class="fas fa-envelope"></i> <strong>Process new emails</strong> - Use the 2-minute rule: if it takes less than 2 minutes, do it now</li>
+                                <li><i class="fas fa-file-alt"></i> <strong>File today's documents</strong> - Put each document in its proper folder immediately</li>
+                                <li><i class="fas fa-tasks"></i> <strong>Update action list</strong> - Check off completed tasks, add new ones</li>
+                                <li><i class="fas fa-desktop"></i> <strong>Quick desktop cleanup</strong> - Move files from desktop to proper folders</li>
+                                <li><i class="fas fa-calendar-alt"></i> <strong>Check tomorrow's schedule</strong> - Prepare for upcoming commitments</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Example:</strong> Set a daily reminder at 4:50 PM to spend the last 10 minutes of your workday on maintenance. This prevents tasks from spilling into the next day.
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        A little daily effort prevents a lot of weekend cleanup
+                    </div>
+                </div>
+
+                <!-- Slide 5 -->
+                <div class="slide" id="slide-5">
+                    <h2 class="slide-title">Weekly Maintenance Routine</h2>
+                    <div class="slide-body">
+                        <p><strong>30 minutes weekly</strong> for deeper organization:</p>
+                        
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-calendar-week"></i>
+                                Friday Afternoon Routine
+                            </div>
+                            <ul class="icon-list">
+                                <li><i class="fas fa-list-ol"></i> <strong>Review all pending items</strong> - What's still outstanding from this week?</li>
+                                <li><i class="fas fa-archive"></i> <strong>Archive completed work</strong> - Move finished projects to archive folders</li>
+                                <li><i class="fas fa-trash-alt"></i> <strong>Delete unnecessary files</strong> - Remove drafts, duplicates, and temporary files</li>
+                                <li><i class="fas fa-download"></i> <strong>Clean downloads folder</strong> - This folder accumulates quickly!</li>
+                                <li><i class="fas fa-hdd"></i> <strong>Check storage space</strong> - Ensure you have enough free space</li>
+                                <li><i class="fas fa-save"></i> <strong>Backup important files</strong> - Copy critical documents to cloud or external drive</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Example:</strong> Mark uses Friday 3:00-3:30 PM for his weekly maintenance. He clears his downloads folder, backs up his project files, and reviews his task list for the coming week.
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Weekly maintenance keeps your system efficient and prevents digital clutter
+                    </div>
+                </div>
+
+                <!-- Slide 6 -->
+                <div class="slide" id="slide-6">
+                    <h2 class="slide-title">Monthly Maintenance Routine</h2>
+                    <div class="slide-body">
+                        <p><strong>1 hour monthly</strong> for system optimization:</p>
+                        
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-calendar-alt"></i>
+                                First Saturday of the Month
+                            </div>
+                            <ul class="icon-list">
+                                <li><i class="fas fa-broom"></i> <strong>Deep clean all folders</strong> - Look for files that can be deleted or archived</li>
+                                <li><i class="fas fa-search"></i> <strong>Review filing system effectiveness</strong> - Are you struggling to find certain types of files?</li>
+                                <li><i class="fas fa-edit"></i> <strong>Update categories if needed</strong> - Add new categories, remove unused ones</li>
+                                <li><i class="fas fa-hourglass-end"></i> <strong>Delete old/irrelevant materials</strong> - Projects from 2 years ago probably don't need to be readily accessible</li>
+                                <li><i class="fas fa-shield-alt"></i> <strong>Check backup integrity</strong> - Verify that your backups are working correctly</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Example:</strong> Sarah spends the first Saturday morning of each month reviewing her digital filing system. Last month, she realized she needed a new folder for "Client Proposals" and deleted 5GB of old temporary files.
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Monthly maintenance ensures your system evolves with your changing needs
+                    </div>
+                </div>
+
+                <!-- Slide 7 -->
+                <div class="slide" id="slide-7">
+                    <h2 class="slide-title">Warning Signs System Needs Attention</h2>
+                    <div class="slide-body">
+                        <p>Watch for these red flags that your system needs reorganization:</p>
+                        
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Warning Signs
+                            </div>
+                            <ul class="icon-list">
+                                <li><i class="fas fa-search"></i> <strong>Taking >1 minute to find files</strong> - If you can't find things quickly, your system isn't working</li>
+                                <li><i class="fas fa-desktop"></i> <strong>Desktop getting cluttered</strong> - More than 10-15 icons on your desktop is a warning sign</li>
+                                <li><i class="fas fa-inbox"></i> <strong>Inbox over 50 messages</strong> - Especially if many are unread</li>
+                                <li><i class="fas fa-brain"></i> <strong>Feeling overwhelmed</strong> - Constant anxiety about missing something</li>
+                                <li><i class="fas fa-clock"></i> <strong>Missing deadlines</strong> - Tasks slipping through the cracks</li>
+                                <li><i class="fas fa-memory"></i> <strong>Forgetting tasks</strong> - Regularly remembering things at the last minute</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="warning">
+                            <strong>Action Required:</strong> When you notice these signs, stop and reorganize (set aside 1-2 hours for a system overhaul).
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Example:</strong> When James noticed he had 87 tabs open in his browser and couldn't find a document he needed for a meeting, he knew it was time for a system reorganization.
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Recognize warning signs early to prevent complete system breakdown
+                    </div>
+                </div>
+
+                <!-- Slide 8 -->
+                <div class="slide" id="slide-8">
+                    <h2 class="slide-title">Common Challenges & Solutions</h2>
+                    <div class="slide-body">
+                        <p>Everyone faces challenges - here's how to overcome them:</p>
+                        
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-puzzle-piece"></i>
+                                Challenges and Practical Solutions
+                            </div>
+                            <ul class="icon-list">
+                                <li><i class="fas fa-running"></i> <strong>Challenge:</strong> Too busy to maintain<br>
+                                    <strong>Solution:</strong> Make it part of existing routine (before lunch, before leaving work)</li>
+                                <li><i class="fas fa-cogs"></i> <strong>Challenge:</strong> System too complicated<br>
+                                    <strong>Solution:</strong> Simplify - keep only what you actually use regularly</li>
+                                <li><i class="fas fa-history"></i> <strong>Challenge:</strong> Falling back to old habits<br>
+                                    <strong>Solution:</strong> Set phone reminders, find an accountability partner</li>
+                                <li><i class="fas fa-stream"></i> <strong>Challenge:</strong> Information from new sources<br>
+                                    <strong>Solution:</strong> Add to system immediately, adjust categories as needed</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Example:</strong> Maria struggled with maintaining her system until she paired it with her morning coffee routine. Now she spends 10 minutes organizing while drinking her coffee each morning.
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Every challenge has a solution - find what works for your specific situation
+                    </div>
+                </div>
+
+                <!-- Slide 9 -->
+                <div class="slide" id="slide-9">
+                    <h2 class="slide-title">The Backup Importance</h2>
+                    <div class="slide-body">
+                        <p>From reading: <em>"Computer system that crashes can cause enormous heartache"</em></p>
+                        
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-shield-alt"></i>
+                                Real Backup Scenarios
+                            </div>
+                            <ul class="icon-list">
+                                <li><i class="fas fa-laptop"></i> <strong>Computer stolen</strong> - All your files gone in an instant</li>
+                                <li><i class="fas fa-hdd"></i> <strong>Hard drive failure</strong> - Mechanical parts eventually fail</li>
+                                <li><i class="fas fa-eraser"></i> <strong>Accidental deletion</strong> - We've all clicked "delete" by mistake</li>
+                                <li><i class="fas fa-file-excel"></i> <strong>File corruption</strong> - Files can become unreadable over time</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="warning">
+                            <strong>Protection:</strong> Regular backups (weekly minimum). Follow the 3-2-1 rule: 3 copies of your data, 2 different media types, 1 copy offsite.
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Example:</strong> David learned the importance of backups when his laptop was stolen during a business trip. Luckily, he had all important files backed up to the cloud and only lost a day's work.
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Backups are not optional - they're essential for protecting your work
+                    </div>
+                </div>
+
+                <!-- Slide 10 -->
+                <div class="slide" id="slide-10">
+                    <h2 class="slide-title">Confidentiality Reminder</h2>
+                    <div class="slide-body">
+                        <p>Always protect sensitive information in your system:</p>
+                        
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-lock"></i>
+                                What to Always Protect
+                            </div>
+                            <ul class="icon-list">
+                                <li><i class="fas fa-user-circle"></i> <strong>Personal information</strong> - ID numbers, addresses, birth dates</li>
+                                <li><i class="fas fa-money-bill-wave"></i> <strong>Financial documents</strong> - Bank statements, tax returns, invoices</li>
+                                <li><i class="fas fa-comments"></i> <strong>Private communications</strong> - Sensitive emails, confidential messages</li>
+                                <li><i class="fas fa-key"></i> <strong>Passwords</strong> - Never store unencrypted passwords</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tip-box">
+                            <div class="example-title">
+                                <i class="fas fa-user-shield"></i>
+                                Protection Methods
+                            </div>
+                            <ul class="icon-list">
+                                <li><i class="fas fa-key"></i> <strong>Strong passwords</strong> - Use password managers like LastPass or Bitwarden</li>
+                                <li><i class="fas fa-lock"></i> <strong>Locked storage</strong> - Password-protect sensitive folders</li>
+                                <li><i class="fas fa-file-contract"></i> <strong>Encrypted files</strong> - Use encryption for highly sensitive documents</li>
+                                <li><i class="fas fa-shredder"></i> <strong>Secure disposal</strong> - Shred paper documents, securely delete digital files</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Good organization includes protecting sensitive information
+                    </div>
+                </div>
+
+                <!-- Slide 11 -->
+                <div class="slide" id="slide-11">
+                    <h2 class="slide-title">Learning from Others</h2>
+                    <div class="slide-body">
+                        <p>From reading: <em>"Learn from good practice of others"</em></p>
+                        
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-users"></i>
+                                Actions You Can Take
+                            </div>
+                            <ul class="icon-list">
+                                <li><i class="fas fa-user-friends"></i> <strong>Ask organized friends about their systems</strong> - What tools and techniques work for them?</li>
+                                <li><i class="fas fa-comments"></i> <strong>Share tips with classmates</strong> - You might learn a new trick</li>
+                                <li><i class="fas fa-vial"></i> <strong>Try different approaches</strong> - Experiment with new methods</li>
+                                <li><i class="fas fa-check-circle"></i> <strong>Adapt what works for you</strong> - Not every system works for everyone</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Key Insight:</strong> "There is no single right answer" - Different people need different systems. A system that works for a graphic designer might not work for an accountant.
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Example:</strong> Tom noticed his colleague was using color-coded folders for different projects. He tried it and found it helped him locate files 50% faster.
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Be open to learning from others while finding what works for you
+                    </div>
+                </div>
+
+                <!-- Slide 12 -->
+                <div class="slide" id="slide-12">
+                    <h2 class="slide-title">Tools of Information Management</h2>
+                    <div class="slide-body">
+                        <p>Don't be afraid to use available tools:</p>
+                        
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-toolbox"></i>
+                                Tools to Consider
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div>
+                                    <h4>Physical Tools</h4>
+                                    <ul class="icon-list">
+                                        <li><i class="fas fa-book"></i> Diaries and planners</li>
+                                        <li><i class="fas fa-sticky-note"></i> Notebooks</li>
+                                        <li><i class="fas fa-filing-cabinet"></i> Filing cabinets</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4>Digital Tools</h4>
+                                    <ul class="icon-list">
+                                        <li><i class="fas fa-folder"></i> Computer folders</li>
+                                        <li><i class="fas fa-cloud"></i> Cloud storage (Google Drive, Dropbox)</li>
+                                        <li><i class="fas fa-mobile-alt"></i> Apps (Todoist, Notion, Evernote)</li>
+                                        <li><i class="fas fa-calendar"></i> Calendar reminders</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Example:</strong> Anna uses a combination: paper notebook for daily tasks, Google Calendar for appointments, Todoist for project tracking, and Dropbox for file storage. This hybrid system works perfectly for her.
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Use the tools that work for you - there's no one-size-fits-all solution
+                    </div>
+                </div>
+
+                <!-- Slide 13 -->
+                <div class="slide" id="slide-13">
+                    <h2 class="slide-title">Adjusting Your System</h2>
+                    <div class="slide-body">
+                        <p>Systems need evolution as your needs change:</p>
+                        
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-sync-alt"></i>
+                                When to Adjust Your System
+                            </div>
+                            <ul class="icon-list">
+                                <li><i class="fas fa-graduation-cap"></i> <strong>What worked last semester may not work now</strong> - Course loads and responsibilities change</li>
+                                <li><i class="fas fa-book-open"></i> <strong>New courses = new categories</strong> - Each course might need its own folder structure</li>
+                                <li><i class="fas fa-chart-line"></i> <strong>More experience = better organization</strong> - You'll learn what works best for you over time</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Recommendation:</strong> Review and adjust your system quarterly. Set a reminder every 3 months to evaluate what's working and what needs improvement.
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Example:</strong> When Jessica started her internship, she realized her college filing system wasn't adequate for work projects. She created new categories for "Client Communications," "Meeting Notes," and "Project Deliverables."
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        A good system evolves with you - don't be afraid to change it
+                    </div>
+                </div>
+
+                <!-- Slide 14 -->
+                <div class="slide" id="slide-14">
+                    <h2 class="slide-title">Dealing with Overwhelming Situations</h2>
+                    <div class="slide-body">
+                        <p>What to do when you return from break/vacation to an overflowing system:</p>
+                        
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-plane"></i>
+                                Returning from Vacation Strategy
+                            </div>
+                            <ul class="icon-list">
+                                <li><i class="fas fa-exclamation-triangle"></i> <strong>Don't panic at 200+ emails</strong> - It happens to everyone</li>
+                                <li><i class="fas fa-clock"></i> <strong>Block 2 hours for processing</strong> - Don't try to handle it throughout the day</li>
+                                <li><i class="fas fa-filter"></i> <strong>Use quick sorting method</strong> - Sort by sender, subject, or date to group similar items</li>
+                                <li><i class="fas fa-check-circle"></i> <strong>Many will resolve themselves</strong> - Some issues solve themselves while you're away</li>
+                                <li><i class="fas fa-reply"></i> <strong>Not all need replies</strong> - Many emails are informational only</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Example:</strong> After a 2-week vacation, Michael returned to 347 emails. He blocked 9-11 AM on his first day back, sorted emails by sender, and was able to process them all in 1.5 hours. Only 47 actually required a response.
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Even overwhelming situations can be managed with the right approach
+                    </div>
+                </div>
+
+                <!-- Slide 15 -->
+                <div class="slide" id="slide-15">
+                    <h2 class="slide-title">Practice Focus - Email Management</h2>
+                    <div class="slide-body">
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-envelope-open-text"></i>
+                                Case Study from Reading
+                            </div>
+                            <p><strong>Problem:</strong> Kate replied to all emails immediately → immense pressure and stress</p>
+                            <p><strong>Solution:</strong></p>
+                            <ul class="icon-list">
+                                <li><i class="fas fa-sort-amount-down"></i> <strong>Prioritize emails</strong> - Not all emails are equally urgent</li>
+                                <li><i class="fas fa-clock"></i> <strong>Some can wait</strong> - Schedule time for non-urgent emails</li>
+                                <li><i class="fas fa-check"></i> <strong>Some resolve themselves</strong> - Not every email requires your intervention</li>
+                                <li><i class="fas fa-comment-slash"></i> <strong>Not all need replies</strong> - Many are FYI only</li>
+                                <li><i class="fas fa-briefcase"></i> <strong>Treated emails like other work</strong> - Scheduled specific times to handle them</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Lesson:</strong> Don't let tools control you. Email is a tool for communication, not a taskmaster that demands immediate attention.
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Example:</strong> Kate now checks email only at 10 AM, 1 PM, and 4 PM. She no longer feels constantly interrupted and can focus on deep work between email sessions.
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Take control of your email instead of letting it control you
+                    </div>
+                </div>
+
+                <!-- Slide 16 -->
+                <div class="slide" id="slide-16">
+                    <h2 class="slide-title">Building Resilience</h2>
+                    <div class="slide-body">
+                        <p>Good information management helps build personal and professional resilience:</p>
+                        
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-shield-alt"></i>
+                                Benefits of Good Information Management
+                            </div>
+                            <ul class="icon-list">
+                                <li><i class="fas fa-heartbeat"></i> <strong>Reduce stress</strong> - Knowing where everything is reduces anxiety</li>
+                                <li><i class="fas fa-hourglass-half"></i> <strong>Save time</strong> - Less time searching means more time doing</li>
+                                <li><i class="fas fa-user-check"></i> <strong>Increase confidence</strong> - You feel more in control of your work</li>
+                                <li><i class="fas fa-chart-line"></i> <strong>Improve performance</strong> - Better organization leads to better results</li>
+                                <li><i class="fas fa-balance-scale"></i> <strong>Better work-life balance</strong> - When work is organized, it doesn't spill into personal time</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Example:</strong> After implementing a good information management system, Raj found he was leaving work on time more often, his stress levels decreased, and he received positive feedback on his improved reliability at work.
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Good organization is an investment that pays dividends in reduced stress and increased effectiveness
+                    </div>
+                </div>
+
+                <!-- Slide 17 -->
+                <div class="slide" id="slide-17">
+                    <h2 class="slide-title">Practice Activity</h2>
+                    <div class="slide-body">
+                        <p><strong>Troubleshooting session</strong> - Work with a partner to improve your systems:</p>
+                        
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-hands-helping"></i>
+                                Step-by-Step Troubleshooting
+                            </div>
+                            <ol style="padding-left: 25px;">
+                                <li><strong>Review mentee's current system</strong> - Have them show you their folders, inbox, task list</li>
+                                <li><strong>Identify pain points</strong> - Where do they struggle most? Finding files? Managing email? Task tracking?</li>
+                                <li><strong>Brainstorm solutions together</strong> - What small changes could make a big difference?</li>
+                                <li><strong>Make adjustments</strong> - Implement at least one improvement during the session</li>
+                                <li><strong>Plan for next month</strong> - Schedule a follow-up to see how the changes are working</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Example:</strong> During a troubleshooting session, Lisa helped Mark realize he was using 5 different places to store project notes. They consolidated everything into OneNote with a consistent structure, saving him hours each week.
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Sometimes an outside perspective can identify solutions we can't see ourselves
+                    </div>
+                </div>
+
+                <!-- Slide 18 -->
+                <div class="slide" id="slide-18">
+                    <h2 class="slide-title">Action for This Week</h2>
+                    <div class="slide-body">
+                        <p>Your practical steps to implement what you've learned:</p>
+                        
+                        <div class="example-box">
+                            <div class="example-title">
+                                <i class="fas fa-clipboard-list"></i>
+                                This Week's Action Items
+                            </div>
+                            <ul class="icon-list">
+                                <li><i class="fas fa-calendar-day"></i> <strong>1. Implement daily 10-min routine</strong> - Choose a consistent time each day</li>
+                                <li><i class="fas fa-calendar-week"></i> <strong>2. Schedule weekly maintenance time</strong> - Put it in your calendar as a recurring appointment</li>
+                                <li><i class="fas fa-bell"></i> <strong>3. Set phone reminders for maintenance</strong> - Use notifications to build the habit</li>
+                                <li><i class="fas fa-save"></i> <strong>4. Test backup system</strong> - Make sure you can restore files from your backup</li>
+                                <li><i class="fas fa-wrench"></i> <strong>5. Adjust one thing that's not working</strong> - Pick your biggest pain point and fix it</li>
+                                <li><i class="fas fa-clock"></i> <strong>6. Keep log: Time saved by good organization</strong> - Track how much time you save each week</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="tip-box">
+                            <i class="fas fa-lightbulb"></i>
+                            <strong>Example:</strong> This week, Jamal will: 1) Do 10 minutes of organization at 4:30 PM daily, 2) Schedule Friday 3 PM for weekly maintenance, 3) Set phone reminders for both, 4) Test restoring a file from his backup, 5) Create a better naming system for his project files, and 6) Track time saved in a simple spreadsheet.
+                        </div>
+                    </div>
+                    <div class="slide-footer">
+                        Knowledge without action doesn't create change - implement at least one thing this week!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Week 4: Maintaining Your System & Handling Challenges</p>
+            <p>Use the navigation buttons or click on slide thumbnails to move through the presentation</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.slide');
+            const totalSlides = slides.length;
+            const currentSlideEl = document.getElementById('current-slide');
+            const totalSlidesEl = document.getElementById('total-slides');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const progressBar = document.getElementById('slide-progress');
+            const slidesList = document.querySelector('.slides-list');
+            
+            let currentSlide = 0;
+            
+            // Set total slides count
+            totalSlidesEl.textContent = totalSlides;
+            
+            // Create slide thumbnails
+            for (let i = 0; i < totalSlides; i++) {
+                const slide = slides[i];
+                const title = slide.querySelector('.slide-title').textContent;
+                
+                const thumb = document.createElement('div');
+                thumb.className = 'slide-thumb';
+                if (i === 0) thumb.classList.add('active');
+                
+                thumb.innerHTML = `
+                    <span class="slide-thumb-number">${i + 1}</span>
+                    <span class="slide-thumb-title">${title.length > 30 ? title.substring(0, 30) + '...' : title}</span>
+                `;
+                
+                thumb.addEventListener('click', () => {
+                    goToSlide(i);
+                });
+                
+                slidesList.appendChild(thumb);
+            }
+            
+            // Update slide display
+            function updateSlide() {
+                // Hide all slides
+                slides.forEach(slide => {
+                    slide.classList.remove('active');
+                });
+                
+                // Show current slide
+                slides[currentSlide].classList.add('active');
+                
+                // Update slide indicator
+                currentSlideEl.textContent = currentSlide + 1;
+                
+                // Update buttons
+                prevBtn.disabled = currentSlide === 0;
+                nextBtn.disabled = currentSlide === totalSlides - 1;
+                
+                // Update progress bar
+                const progress = ((currentSlide + 1) / totalSlides) * 100;
+                progressBar.style.width = `${progress}%`;
+                
+                // Update active thumbnail
+                document.querySelectorAll('.slide-thumb').forEach((thumb, index) => {
+                    if (index === currentSlide) {
+                        thumb.classList.add('active');
+                        // Scroll thumbnail into view if needed
+                        thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    } else {
+                        thumb.classList.remove('active');
+                    }
+                });
+                
+                // Update URL hash for bookmarking
+                window.location.hash = `slide-${currentSlide + 1}`;
+            }
+            
+            // Go to specific slide
+            function goToSlide(slideIndex) {
+                if (slideIndex >= 0 && slideIndex < totalSlides) {
+                    currentSlide = slideIndex;
+                    updateSlide();
+                }
+            }
+            
+            // Next slide
+            nextBtn.addEventListener('click', () => {
+                if (currentSlide < totalSlides - 1) {
+                    currentSlide++;
+                    updateSlide();
+                }
+            });
+            
+            // Previous slide
+            prevBtn.addEventListener('click', () => {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    updateSlide();
+                }
+            });
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    // Next slide on right arrow or space
+                    if (currentSlide < totalSlides - 1) {
+                        currentSlide++;
+                        updateSlide();
+                    }
+                } else if (e.key === 'ArrowLeft') {
+                    // Previous slide on left arrow
+                    if (currentSlide > 0) {
+                        currentSlide--;
+                        updateSlide();
+                    }
+                } else if (e.key >= 1 && e.key <= 9) {
+                    // Jump to slide 1-9 on number key press
+                    const slideNum = parseInt(e.key) - 1;
+                    if (slideNum < totalSlides) {
+                        goToSlide(slideNum);
+                    }
+                }
+            });
+            
+            // Check for hash on page load
+            window.addEventListener('load', () => {
+                const hash = window.location.hash;
+                if (hash) {
+                    const match = hash.match(/slide-(\d+)/);
+                    if (match) {
+                        const slideNum = parseInt(match[1]) - 1;
+                        if (slideNum >= 0 && slideNum < totalSlides) {
+                            goToSlide(slideNum);
+                        }
+                    }
+                }
+            });
+            
+            // Initialize
+            updateSlide();
+        });
+    </script>
+</body>
+</html>
